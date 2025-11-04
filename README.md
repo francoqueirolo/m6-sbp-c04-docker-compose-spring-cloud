@@ -20,7 +20,7 @@ cd ..
 docker compose build
 ```
 
-### Inicializar servicio docker compose
+### Inicializar servicios docker compose
 ```
 docker compose up -d
 ```
