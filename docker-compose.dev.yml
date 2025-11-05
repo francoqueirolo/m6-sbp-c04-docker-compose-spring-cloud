@@ -48,9 +48,6 @@ services:
   #  User Service Dev
   user-service-dev:
     image: jgomez2z/user-service-dev:1.0
-    build:
-      context: ./user-service
-      dockerfile: Dockerfile
     container_name: user-service-dev
     # ports:
     #  - "9081:8081"
@@ -70,9 +67,6 @@ services:
 #  Product Service Dev
   product-service-dev:
     image: jgomez2z/product-service-dev:1.0
-    build:
-      context: ./product-service
-      dockerfile: Dockerfile
     container_name: product-service-dev
     # ports:
     #  - "9082:8082"
@@ -92,9 +86,6 @@ services:
 #  Api Gateway Dev
   api-gateway-dev:
     image: jgomez2z/api-gateway-dev:1.0
-    build:
-      context: ./api-gateway
-      dockerfile: Dockerfile
     container_name: api-gateway-dev
     ports:
       - "9080:8080"
