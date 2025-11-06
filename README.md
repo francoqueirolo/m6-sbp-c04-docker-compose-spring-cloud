@@ -42,7 +42,7 @@ docker compose start user-service-dev
 docker compose up -d user-service-dev
 ```
 
-# CREACIONES DE IMAGENES PARA EL DESPLIEGUE
+## Parte 2 : CREACIÓN DE IMÁGENES PARA EL DESPLIEGUE
 
 ### Paso 1 : Generar los componentes jar de cada proyecto
 ```
