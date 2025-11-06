@@ -80,3 +80,121 @@ docker push jgomez2z/user-service-dev:1.0
 docker push jgomez2z/product-service-dev:1.0
 docker push jgomez2z/api-gateway-dev:1.0  
 ```
+
+### Paso 4 : Crear un archivo docker-compose.dev.yml que use las imágenes creadas.
+```
+name : microservices-dev
+
+services:
+  # PostgreSQL para User Service
+  postgres-user-dev:
+    image: postgres:15-alpine
+    container_name: postgres-user-dev
+    environment:
+      POSTGRES_DB: userdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=en_US.UTF-8"
+  #  ports:
+  #    - "5432:5432"
+    volumes:
+      - postgres-user-dev-data:/var/lib/postgresql/data
+    networks:
+      - microservice-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d userdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # PostgreSQL para Product Service
+  postgres-product-dev:
+    image: postgres:15-alpine
+    container_name: postgres-product-dev
+    environment:
+      POSTGRES_DB: productdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=en_US.UTF-8"
+    #ports:
+    #  - "5433:5432"  # Puerto externo 5433, interno 5432
+    volumes:
+      - postgres-product-dev-data:/var/lib/postgresql/data
+    networks:
+      - microservice-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d productdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  #  User Service Dev
+  user-service-dev:
+    image: jgomez2z/user-service-dev:1.0
+    container_name: user-service-dev
+    # ports:
+    #  - "9081:8081"
+    environment:
+      - SPRING_APPLICATION_NAME=user-service
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-user-dev:5432/userdb
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+    depends_on:
+      postgres-user-dev:
+        condition: service_healthy
+    networks:
+      - microservice-network
+    restart: unless-stopped
+
+#  Product Service Dev
+  product-service-dev:
+    image: jgomez2z/product-service-dev:1.0
+    container_name: product-service-dev
+    # ports:
+    #  - "9082:8082"
+    environment:
+      - SPRING_APPLICATION_NAME=product-service
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-product-dev:5432/productdb
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+    depends_on:
+      postgres-product-dev:
+        condition: service_healthy
+    networks:
+      - microservice-network
+    restart: unless-stopped
+
+#  Api Gateway Dev
+  api-gateway-dev:
+    image: jgomez2z/api-gateway-dev:1.0
+    container_name: api-gateway-dev
+    ports:
+      - "9080:8080"
+    environment:
+      - SPRING_APPLICATION_NAME=api-gateway
+      - SPRING_PROFILES_ACTIVE=dev
+
+    depends_on:
+      user-service-dev:
+        condition: service_started
+      product-service-dev:
+        condition: service_started
+    networks:
+      - microservice-network
+    restart: unless-stopped
+
+networks:
+  microservice-network:
+    driver: bridge
+
+volumes:
+  postgres-user-dev-data:
+    driver: local
+  postgres-product-dev-data:
+    driver: local
+
+```
