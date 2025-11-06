@@ -68,9 +68,9 @@ cd ..
 docker login
 
 # Crear imágenes para la cuenta jgomez2z
-docker build -t jgomez2z/user-service-dev:1.0  ./user-service
-docker build -t jgomez2z/product-service-dev:1.0  ./product-service
-docker build -t jgomez2z/api-gateway-dev:1.0  ./api-gateway
+docker buildx build --platform linux/amd64 -t jgomez2z/user-service-dev:1.0  ./user-service
+docker buildx build --platform linux/amd64 -t jgomez2z/product-service-dev:1.0  ./product-service
+docker buildx build --platform linux/amd64 -t jgomez2z/api-gateway-dev:1.0  ./api-gateway
 ```
 
 ### Paso 3 : Subir las imágenes al Docker Hub
