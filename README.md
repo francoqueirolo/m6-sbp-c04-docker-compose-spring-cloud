@@ -62,11 +62,12 @@ cd ..
 
 ### Paso 2 : Crear las imágenes ( se debe tener una cuenta de Docker)
 
+
 ```
 # login
 docker login
 
-# Crear imagenes 
+# Crear imagenes para la cuenta jgomez2z
 docker build -t jgomez2z/user-service-dev:1.0  ./user-service
 docker build -t jgomez2z/product-service-dev:1.0  ./product-service
 docker build -t jgomez2z/api-gateway-dev:1.0  ./api-gateway
@@ -74,6 +75,7 @@ docker build -t jgomez2z/api-gateway-dev:1.0  ./api-gateway
 
 ### Paso 3 : Subir las imágenes al Docker Hub
 ```
+# Subir imagenes para la cuenta jgomez2z
 docker push jgomez2z/user-service-dev:1.0 
 docker push jgomez2z/product-service-dev:1.0
 docker push jgomez2z/api-gateway-dev:1.0  
